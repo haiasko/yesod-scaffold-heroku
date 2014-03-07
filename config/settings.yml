@@ -15,5 +15,5 @@ Staging:
   <<: *defaults
 
 Production:
-  #approot: "http://www.example.com"
+  approot: "http://sleepy-oasis-6155.herokuapp.com"
   <<: *defaults
