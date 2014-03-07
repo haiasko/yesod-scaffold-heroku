@@ -1,0 +1,24 @@
+Default: &defaults
+  user: yesod-scaffold
+  password: yesod-scaffold
+  host: localhost
+  port: 5432
+  database: yesod-scaffold
+  poolsize: 10
+
+Development:
+  <<: *defaults
+
+Testing:
+  database: yesod-scaffold_test
+  <<: *defaults
+
+Staging:
+  database: yesod-scaffold_staging
+  poolsize: 100
+  <<: *defaults
+
+Production:
+  database: yesod-scaffold_production
+  poolsize: 100
+  <<: *defaults
