@@ -25,6 +25,9 @@ import Network.Wai.Logger (clockDateCacher)
 import Data.Default (def)
 import Yesod.Core.Types (loggerSet, Logger (Logger))
 
+-- parse database url 
+import Helpers.Heroku
+
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
 import Handler.Home
@@ -62,9 +65,13 @@ makeFoundation :: AppConfig DefaultEnv Extra -> IO App
 makeFoundation conf = do
     manager <- newManager conduitManagerSettings
     s <- staticSite
-    dbconf <- withYamlEnvironment "config/postgresql.yml" (appEnv conf)
-              Database.Persist.loadConfig >>=
-              Database.Persist.applyEnv
+    dbconf <- if development 
+              -- default behavior when in development
+              then withYamlEnvironment "config/postgresql.yml" (appEnv conf)
+                 Database.Persist.loadConfig >>=
+                 Database.Persist.applyEnv
+              -- but parse DATABASE_URL in non-development
+              else herokuConf
     p <- Database.Persist.createPoolConfig (dbconf :: Settings.PersistConf)
 
     loggerSet' <- newStdoutLoggerSet defaultBufSize
